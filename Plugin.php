@@ -5,7 +5,7 @@
  * 
  * @package RnRKaTeX
  * @author Rainiar
- * @version 1.1.0
+ * @version 1.2.0
  * @link https://rainiar.top
  */
 class RnRKaTeX_Plugin implements Typecho_Plugin_Interface {
@@ -19,9 +19,9 @@ class RnRKaTeX_Plugin implements Typecho_Plugin_Interface {
      * @throws Typecho_Plugin_Exception
      */
     public static function activate() {
-        Typecho_Plugin::factory('Widget_Archive')->singleHandle = array('RnRKaTeX_Plugin', 'check');
-        Typecho_Plugin::factory('Widget_Archive')->header = array('RnRKaTeX_Plugin', 'header');
-        Typecho_Plugin::factory('Widget_Archive')->footer = array('RnRKaTeX_Plugin', 'footer');
+        Typecho_Plugin::factory('Widget_Archive')->singleHandle_1525541059 = array('RnRKaTeX_Plugin', 'check');
+        Typecho_Plugin::factory('Widget_Archive')->header_1961744881 = array('RnRKaTeX_Plugin', 'header');
+        Typecho_Plugin::factory('Widget_Archive')->footer_837390541 = array('RnRKaTeX_Plugin', 'footer');
     }
     
     /**
@@ -65,29 +65,14 @@ class RnRKaTeX_Plugin implements Typecho_Plugin_Interface {
     
     public static function header() {
         $settings = Helper::options()->plugin('RnRKaTeX');
-        echo '<link rel="stylesheet" href="';
-        echo $settings->cssKatex;
-        echo '">';
-        echo '<script type="text/javascript" src="';
-        echo $settings->jsKatex;
-        echo '"></script>';
-        echo '<script type="text/javascript" src="';
-        echo $settings->jsAutorender;
-        echo '"></script>';
+        echo '<link rel="stylesheet" href="' . $settings->cssKatex . '"><script type="text/javascript" src="' . $settings->jsKatex . '"></script><script type="text/javascript" src="' . $settings->jsAutorender . '"></script>';
     }
     
     public static function footer() {
-        if (!self::$isSingleHandle) {
+        if (!self::$isSingleHandle)
             return;
-        }
         $settings = Helper::options()->plugin('RnRKaTeX');
-        echo '<script defer type="text/javascript">renderMathInElement(document.body,{delimiters:[{left:"';
-        echo $settings->delimiter;
-        echo '",right:"';
-        echo $settings->delimiter;
-		echo '",display:false}],ignoredTags:[';
-		echo $settings->ignoredTag;
-		echo ']});</script>';
+        echo '<script defer type="text/javascript">renderMathInElement(document.body,{delimiters:[{left:"' . $settings->delimiter . '",right:"' . $settings->delimiter . '",display:false}],ignoredTags:[' . $settings->ignoredTag . ']});</script>';
 		$isSingleHandle = false;
     }
     
