@@ -5,12 +5,10 @@
  * 
  * @package RnRKaTeX
  * @author Rainiar
- * @version 1.2.0
+ * @version 1.3.0
  * @link https://rainiar.top
  */
 class RnRKaTeX_Plugin implements Typecho_Plugin_Interface {
-    static $isSingleHandle = false;
-    
     /**
      * 激活插件方法,如果激活失败,直接抛出异常
      * 
@@ -19,7 +17,6 @@ class RnRKaTeX_Plugin implements Typecho_Plugin_Interface {
      * @throws Typecho_Plugin_Exception
      */
     public static function activate() {
-        Typecho_Plugin::factory('Widget_Archive')->singleHandle_1525541059 = array('RnRKaTeX_Plugin', 'check');
         Typecho_Plugin::factory('Widget_Archive')->header_1961744881 = array('RnRKaTeX_Plugin', 'header');
         Typecho_Plugin::factory('Widget_Archive')->footer_837390541 = array('RnRKaTeX_Plugin', 'footer');
     }
@@ -65,18 +62,28 @@ class RnRKaTeX_Plugin implements Typecho_Plugin_Interface {
     
     public static function header() {
         $settings = Helper::options()->plugin('RnRKaTeX');
-        echo '<link rel="stylesheet" href="' . $settings->cssKatex . '"><script type="text/javascript" src="' . $settings->jsKatex . '"></script><script type="text/javascript" src="' . $settings->jsAutorender . '"></script>';
+        echo '<link rel="stylesheet" href="' . $settings->cssKatex . '"><script src="' . $settings->jsKatex . '"></script><script src="' . $settings->jsAutorender . '"></script>';
     }
     
     public static function footer() {
-        if (!self::$isSingleHandle)
-            return;
         $settings = Helper::options()->plugin('RnRKaTeX');
-        echo '<script defer type="text/javascript">renderMathInElement(document.body,{delimiters:[{left:"' . $settings->delimiter . '",right:"' . $settings->delimiter . '",display:false}],ignoredTags:[' . $settings->ignoredTag . ']});</script>';
-		$isSingleHandle = false;
+?>
+<script defer>
+    function katexRender() {
+        renderMathInElement(document.body,
+            {
+                delimiters: [
+                    {
+                        left: "<?php echo $settings->delimiter; ?>",
+                        right: "<?php echo $settings->delimiter; ?>",
+                        display: false
+                    }
+                ],
+                ignoredTags: [<?php echo $settings->ignoredTag; ?>]
+            });
     }
-    
-    public static function check(Widget_Archive $archive, Typecho_Db_Query $delect) {
-        self::$isSingleHandle = true;
+    katexRender();
+</script>
+<?php
     }
 }
